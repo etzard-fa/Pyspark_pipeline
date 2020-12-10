@@ -5,7 +5,7 @@ import configparser
 
 
 # Initiating spark session
-spark = SparkSession.builder.appName("DailyDataIngest").master("local").getOrCreate()
+spark = SparkSession.builder.appName("ReadingLandingFile").master("local").getOrCreate()
 
 # Reading the configs
 config = configparser.ConfigParser()
@@ -14,6 +14,17 @@ inputLocation = config.get('paths', 'inputLocation')
 landingSchemaFromConf = config.get('schema', 'landingFileSchema')
 
 landingFileSchema = read_schema(landingSchemaFromConf)
+
+# Reading landing zone
+landingFileSchema = StructType([
+   StructField('Sale_ID', StringType(), True),
+    StructField('Product_ID', StringType(), True),
+   StructField('Quantity_Sold', IntegerType(), True),
+   StructField('Vendor_ID', StringType(), True),
+  StructField('Sale_Date', TimestampType(), True),
+   StructField('Sale_Amount', DoubleType(), True),
+   StructField('Sale_Currency', StringType(), True)
+])
 
 landingFileDF = spark.read \
     .schema(landingFileSchema) \
